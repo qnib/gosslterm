@@ -82,6 +82,7 @@ func Run(ctx *cli.Context) {
 	proxy := moxy.NewReverseProxy(hosts, filters)
 
 	router := mux.NewRouter()
+	// TODO: Can I haz a catch-all route, so that I do not know it in advance? #1
 	router.HandleFunc("/", proxy.ServeHTTP)
 	router.HandleFunc("/pi", proxy.ServeHTTP)
 	router.HandleFunc("/pi/{{num}}", proxy.ServeHTTP)

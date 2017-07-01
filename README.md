@@ -24,8 +24,14 @@ $ docker run -ti --rm --network=container:$(docker ps -qlf label=com.docker.swar
 2017/07/01 14:56:46 Create http.Server on ':8081'
 ```
 
-Nice, now we have 
+Nice, now we have a reverse proxy:
 
+```bash
+$  curl --insecure "https://127.0.0.1:8081/pi/100"                                                                                                                                                         git:(master|)
+Welcome: pi(100)=3.151493
+```
+
+Spits out at the Logger:
 ```bash
 [negroni] 2017-07-01T14:56:50Z | 200 | 	 19.844831ms | 127.0.0.1:8081 | GET /pi
 ```
