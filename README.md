@@ -17,9 +17,7 @@ Now we spin up the container to join the task. In the example below we are using
 
 ```bash
 $ docker run -ti --rm --network=container:$(docker ps -qlf label=com.docker.swarm.service.name=http) \
-             -e GOSSLTERM_BACKEND_ADDR=127.0.0.1:8080 -e GOSSLTERM_FRONTEND_ADDR=:8081 qnib/$(basename ${PWD})
-[II] qnib/init-plain script v0.4.28
-> execute CMD 'gosslterm'
+             -e GOSSLTERM_BACKEND_ADDR=127.0.0.1:8080 -e GOSSLTERM_FRONTEND_ADDR=:8081 qnib/gosslterm
 2017/07/01 14:56:46 Load cert '/opt/qnib/ssl/cert.pem' and key '/opt/qnib/ssl/key.pem'
 2017/07/01 14:56:46 Create http.Server on ':8081'
 ```
