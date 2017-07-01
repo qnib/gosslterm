@@ -1,5 +1,5 @@
 ARG DOCKER_REG=docker.io
-FROM ${DOCKER_REG}/qnib/uplain-golang AS build
+FROM ${DOCKER_REG}/qnib/alplain-golang AS build
 
 WORKDIR /usr/local/src/github.com/qnib/gosslterm
 COPY main.go ./main.go
@@ -17,13 +17,12 @@ RUN openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem \
 
 ## Build final image
 
-FROM ${DOCKER_REG}/qnib/uplain-init
+FROM alpine:3.5
 
 COPY --from=build /usr/local/bin/gosslterm /usr/local/bin/
 COPY --from=ssl /opt/qnib/ssl/cert.pem /opt/qnib/ssl/key.pem /opt/qnib/ssl/
-ENV SKIP_ENTRYPOINTS=true \
-    GOSSLTERM_CERT=/opt/qnib/ssl/cert.pem \
+ENV GOSSLTERM_CERT=/opt/qnib/ssl/cert.pem \
     GOSSLTERM_KEY=/opt/qnib/ssl/key.pem \
     GOSSLTERM_FRONTEND_ADDR=:8081 \
     GOSSLTERM_BACKEND_ADDR=127.0.0.1:8080
-CMD ["gosslterm"]
+CMD ["/usr/local/bin/gosslterm"]
