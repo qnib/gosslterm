@@ -6,7 +6,6 @@ import (
 	"os"
 	"crypto/tls"
 	"github.com/codegangsta/negroni"
-	"github.com/gorilla/mux"
 	"github.com/wunderlist/moxy"
 	"github.com/codegangsta/cli"
 	"github.com/zpatrick/go-config"
@@ -81,14 +80,8 @@ func Run(ctx *cli.Context) {
 	filters := []moxy.FilterFunc{}
 	proxy := moxy.NewReverseProxy(hosts, filters)
 
-	router := mux.NewRouter()
-	// TODO: Can I haz a catch-all route, so that I do not know it in advance? https://github.com/qnib/gosslterm/issues/1
-	router.HandleFunc("/", proxy.ServeHTTP)
-	router.HandleFunc("/pi", proxy.ServeHTTP)
-	router.HandleFunc("/pi/{{num}}", proxy.ServeHTTP)
-
 	app := negroni.New(negroni.NewLogger())
-	app.UseHandler(router)
+	app.UseHandler(proxy)
 
 	fAddr, _ := cfg.String("frontend-addr")
 	log.Printf("Create http.Server on '%s'", fAddr)
