@@ -13,11 +13,16 @@ $ docker service create --name http --replicas=1 -p 8081:8081 qnib/plain-httpche
 s0jgo83hsjghp0atptwellhbe
 ```
 
-Now we spin up the container to join the task. In the example below we are using the container_id of the last container started for the service `http`.
+Now we spin up the container to join the task. In the example below we are using the container_id of the last container started for the service `http`.<br>
+**Please note**, that we are using the `ssl` files from the container we are joining by using `--volumes-from`.
+
 
 ```bash
 $ docker run -ti --rm --network=container:$(docker ps -qlf label=com.docker.swarm.service.name=http) \
-             -e GOSSLTERM_BACKEND_ADDR=127.0.0.1:8080 -e GOSSLTERM_FRONTEND_ADDR=:8081 qnib/gosslterm
+             --volumes-from=$(docker ps -qlf label=com.docker.swarm.service.name=http) \
+             -e GOSSLTERM_BACKEND_ADDR=127.0.0.1:8080 -e GOSSLTERM_FRONTEND_ADDR=:8081 \
+             -e GOSSLTERM_CERT=/opt/qnib/ssl/cert.pem \
+             -e GOSSLTERM_KEY=/opt/qnib/ssl/key.pem qnib/gosslterm
 2017/07/01 14:56:46 Load cert '/opt/qnib/ssl/cert.pem' and key '/opt/qnib/ssl/key.pem'
 2017/07/01 14:56:46 Create http.Server on ':8081'
 ```
@@ -31,5 +36,5 @@ Welcome: pi(100)=3.151493
 
 Spits out at the Logger:
 ```bash
-[negroni] 2017-07-01T14:56:50Z | 200 | 	 19.844831ms | 127.0.0.1:8081 | GET /pi
+[negroni] 2017-07-01T14:56:50Z | 200 | 	 19.844831ms | 127.0.0.1:8081 | GET /pi/100
 ```

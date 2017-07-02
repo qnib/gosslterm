@@ -20,9 +20,9 @@ RUN openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem \
 FROM alpine:3.5
 
 COPY --from=build /usr/local/bin/gosslterm /usr/local/bin/
-COPY --from=ssl /opt/qnib/ssl/cert.pem /opt/qnib/ssl/key.pem /opt/qnib/ssl/
-ENV GOSSLTERM_CERT=/opt/qnib/ssl/cert.pem \
-    GOSSLTERM_KEY=/opt/qnib/ssl/key.pem \
+COPY --from=ssl /opt/qnib/ssl/cert.pem /opt/qnib/ssl/key.pem /opt/qnib/gosslterm/
+ENV GOSSLTERM_CERT=/opt/qnib/gosslterm/cert.pem \
+    GOSSLTERM_KEY=/opt/qnib/gosslterm/key.pem \
     GOSSLTERM_FRONTEND_ADDR=:8081 \
     GOSSLTERM_BACKEND_ADDR=127.0.0.1:8080
 CMD ["/usr/local/bin/gosslterm"]
